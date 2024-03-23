@@ -1,0 +1,32 @@
+---
+import { itemsSideBarTop } from '../data/app.ts';
+
+import Logout from '../components/Logout.astro';
+import Setting from '../components/Setting.astro';
+---
+
+<section class="fixed flex flex-col flex-1 h-full justify-between p-4 py-12 xl:w-full" >
+    <div class="space-y-2">
+        {
+            itemsSideBarTop?.map((item) => {
+                return (
+                    <a  class="duration-300 flex gap-2 hover:bg-sky-500 hover:stroke-white hover:text-white items-center max-w-64  px-3 py-2 rounded-xl stroke-black transition" href={item?.path}>
+                        {<item.icon />}
+                        <p class="hidden xl:block">{item?.title}</p>            
+                    </a>                
+                )        
+            })
+        }    
+    </div>
+
+    <div class="space-y-2">
+        <a class="duration-300 flex gap-2 hover:bg-sky-500 hover:stroke-white hover:text-white items-center max-w-64  px-3 py-2 rounded-xl stroke-black transition" href='/configuraciones'>
+            <Setting />
+            <p class="hidden xl:block">Configuraciones</p>            
+        </a>                
+        <a class="duration-300 flex gap-2 hover:bg-sky-500 hover:stroke-white hover:text-white items-center max-w-64  px-3 py-2 rounded-xl stroke-black transition">
+            <Logout />
+            <p class="hidden xl:block">Salir</p>            
+        </a>                        
+    </div>
+</section>

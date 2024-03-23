@@ -1,0 +1,87 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { LineGraph } from "../components/LineGraph.jsx";
+import { PieGraph } from "../components/PieGraph.jsx";
+
+import { GET_indicadores, GET_ventas_mensuales } from "../data/app.ts";
+
+const data_sucursales_x_ventas = await fetch('http://127.0.0.1:8000/machine_learning/sucursales_x_ventas') 
+const data_sucursales_x_ventas_json = await data_sucursales_x_ventas.json()
+
+const indicadores = await GET_indicadores()
+const ventas_x_mensual = await GET_ventas_mensuales()
+
+
+---
+
+<Layout title="Dashboard MR" >
+  <main id="app-main">
+    <header id="articulos" class="[grid-area:header] flex flex-col gap-7 pr-2 xl:flex-row xl:pr-0" >
+      {
+        indicadores?.map((indicador) => (
+          <article
+            id={`indicador-${indicador?.id}`}
+            class="flex-1 font-bold grid p-6 rounded-xl space-y-4"
+          >
+            <h2>{indicador?.title}</h2>
+            <p class="text-6xl">{indicador?.indicador}</p>
+            <div class="flex font-medium justify-between">
+              <span class="text-green-600">+ {indicador?.porcentaje}%</span>
+              <span>{indicador?.increment}k esta semana</span>
+            </div>
+          </article>
+        ))
+      }
+    </header>
+    <section class="[grid-area:graph1] flex flex-col gap-5 pr-1 py-8">
+      <h1 class="font-bold text-2xl xl:text-3xl">{ventas_x_mensual?.datasets[0]?.label}</h1>
+      <LineGraph data={ventas_x_mensual} client:idle />
+    </section> 
+    <section class="[grid-area:graph2] flex flex-col gap-5 pr-1 py-8">
+      <h1 class="font-bold text-2xl xl:text-3xl">{data_sucursales_x_ventas_json?.datasets[0]?.label}</h1>
+      <PieGraph data={data_sucursales_x_ventas_json} client:idle />
+    </section>
+  </main>
+</Layout>
+
+<style >
+  #app-main {
+    display: grid;
+    grid-template-areas:
+      "header header header header"
+      "graph1 graph1 graph2 graph2";
+    height: 100%;
+  }
+
+  @media screen and (max-width: 900px) {
+    #app-main {
+      grid-template-areas:
+        "header"
+        "graph1"
+        "graph2";
+
+      grid-auto-flow: row;
+    }
+  }
+</style>
+
+<script is:inline>
+  document.addEventListener('astro:page-load', () => {    
+    // Modificar los colores de los indicadores.
+    const articlesIndicadores = document.querySelectorAll("#articulos > article");
+  
+    articlesIndicadores[0]?.classList.add("bg-green-100");
+    articlesIndicadores[1]?.classList.add("bg-yellow-100");
+    articlesIndicadores[2]?.classList.add("bg-blue-100");
+    articlesIndicadores[3]?.classList.add("bg-red-100");
+  
+    // Modificar el color de texto del indicador de reembolsos.
+    const articleReembolsos = document.querySelector(
+      "#indicador-3 > div > span.text-green-600"
+    );
+  
+    articleReembolsos?.classList.replace("text-green-600", "text-red-600");
+  })
+</script>
+
+
