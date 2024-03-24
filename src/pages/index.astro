@@ -3,11 +3,9 @@ import Layout from "../layouts/Layout.astro";
 import { LineGraph } from "../components/LineGraph.jsx";
 import { PieGraph } from "../components/PieGraph.jsx";
 
-import { GET_indicadores, GET_ventas_mensuales } from "../data/app.ts";
+import { GET_indicadores, GET_sucursales_mensuales, GET_ventas_mensuales } from "../data/app.ts";
 
-const data_sucursales_x_ventas = await fetch('http://127.0.0.1:8000/machine_learning/sucursales_x_ventas') 
-const data_sucursales_x_ventas_json = await data_sucursales_x_ventas.json()
-
+const data_sucursales_x_ventas_json = await GET_sucursales_mensuales();
 const indicadores = await GET_indicadores()
 const ventas_x_mensual = await GET_ventas_mensuales()
 
